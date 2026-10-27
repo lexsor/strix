@@ -5,11 +5,16 @@ on:
     - cron: '0 0 * * *' # Runs every day at midnight UTC
   workflow_dispatch: # Allows you to manually trigger the sync via the Actions tab
 
+permissions: {}
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Sync Fork
-        run: gh repo sync ${{ github.repository }} --branch main
+        run: gh repo sync "$REPO" --branch main
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
